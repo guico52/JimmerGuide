@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: JimmerGuide
+  datasource:
+    url: jdbc:postgresql://guico.tech:5432/jimmer
+    username: postgres
+    password: 411326li?
+    driver-class-name: org.postgresql.Driver
