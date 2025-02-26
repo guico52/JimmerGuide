@@ -6,3 +6,11 @@ spring:
     username: postgres
     password: 411326li?
     driver-class-name: org.postgresql.Driver
+server:
+  port: 8000
+jimmer:
+    language: kotlin
+    dialect: org.babyfish.jimmer.sql.dialect.MySqlDialect
+    show-sql: true
+    pretty-sql: true
+    database-validation-mode: ERROR

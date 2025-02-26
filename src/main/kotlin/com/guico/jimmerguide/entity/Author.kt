@@ -1,67 +1,52 @@
 package com.guico.jimmerguide.entity
 
-import java.time.LocalDateTime
+import org.babyfish.jimmer.Formula
 import org.babyfish.jimmer.sql.*
+import com.guico.jimmerguide.common.BaseEntity
 
 
-/**
- * <p>
- *  author
-
- * </p>
- *
- * @author guico
- * @date 2025-02-24
- */
 @Entity
-@Table(name = "author")
-public interface Author {
+interface Author : BaseEntity {
 
-    /**
-     *  id
-
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long
 
-    /**
-     *  first_name
+    // It is inappropriate to use `firstName` and `lastName`
+    // as keys in actual project, but this is just a small demo.
 
-     */
-    @Key
-    @Column(name = "first_name")
+    @Key // (1)
     val firstName: String
 
-    /**
-     *  last_name
-
-     */
-    @Key
-    @Column(name = "last_name")
+    @Key // (2)
     val lastName: String
 
-    /**
-     *  gender
+    val gender: Gender
 
-     */
-    val gender: String
-
-    /**
-     *  created_time
-
-     */
-    @Column(name = "created_time")
-    val createdTime: LocalDateTime
-
-    /**
-     *  modified_time
-
-     */
-    @Column(name = "modified_time")
-    val modifiedTime: LocalDateTime
-
-    @OneToMany(mappedBy = "author")
+    @ManyToMany(mappedBy = "authors") // (3)
     val books: List<Book>
 
+    // -----------------------------
+    //
+    // Everything below this line are calculated properties.
+    //
+    // The simple calculated properties are shown here. As for the
+    // complex calculated properties, you can view `BookStore.avgPrice` and
+    // `BookStore.newestBooks`
+    // -----------------------------
+    @Formula(dependencies = ["firstName", "lastName"]) // (4)
+    val fullName: String
+        get() = "$firstName $lastName"
+
+    // The simple property above is simple calculation based on JAVA expression,
+    // you can also define simple calculations given SQL expressions like this
+    //
+    // @Formula(sql = "concat(%alias.FIRST_NAME, ' ', %alias.LAST_NAME)")
+    // val fullName
 }
+
+/*----------------Documentation Links----------------
+(1) (2) https://babyfish-ct.github.io/jimmer-doc/docs/mapping/advanced/key
+(3) https://babyfish-ct.github.io/jimmer-doc/docs/mapping/base/association/many-to-many
+(4) https://babyfish-ct.github.io/jimmer-doc/docs/mapping/advanced/calculated/formula
+---------------------------------------------------*/

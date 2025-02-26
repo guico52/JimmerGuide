@@ -1,87 +1,54 @@
 package com.guico.jimmerguide.entity
 
-import java.math.BigDecimal
-import java.time.LocalDateTime
 import org.babyfish.jimmer.sql.*
+import com.guico.jimmerguide.common.BaseEntity
+import com.guico.jimmerguide.common.TenantAware
+import java.math.BigDecimal
 
-
-/**
- * <p>
- *  book
-
- * </p>
- *
- * @author guico
- * @date 2025-02-24
- */
 @Entity
-@Table(name = "book")
-public interface Book {
+interface Book : BaseEntity, TenantAware {
 
-    /**
-     *  id
-
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long
 
-    /**
-     *  name
-
-     */
-    @Key
+    @Key // (1)
     val name: String
 
-    /**
-     *  edition
-
-     */
-    @Key
+    @Key // (2)
     val edition: Int
 
-    /**
-     *  price
-
-     */
     val price: BigDecimal
 
-    /**
-     *  store_id
+    @ManyToOne // (3)
+    val store: BookStore?
 
-     */
-    @Column(name = "store_id")
-    val storeId: Long?
-
-    /**
-     *  tenant
-
-     */
-    val tenant: String
-
-    /**
-     *  created_time
-
-     */
-    @Column(name = "created_time")
-    val createdTime: LocalDateTime
-
-    /**
-     *  modified_time
-
-     */
-    @Column(name = "modified_time")
-    val modifiedTime: LocalDateTime
-
-    @ManyToMany
+    @ManyToMany // (4)
     @JoinTable(
-        name = "book_author_mapping",
-        joinColumns = [JoinColumn(name = "book_id")],
-        inverseJoinColumns = [JoinColumn(name = "author_id")]
+        name = "BOOK_AUTHOR_MAPPING",
+        joinColumnName = "BOOK_ID",
+        inverseJoinColumnName = "AUTHOR_ID"
     )
     val authors: List<Author>
 
-    @ManyToOne
-    val bookStore: BookStore
+    // -----------------------------
+    // Optional properties
+    // -----------------------------
 
+    // Optional property `storeId`
+    // If this property is deleted, please add `BookInput.Mapper.toBookStore(Long)`
+    @IdView // (5)
+    val storeId: Long?
+
+    // Optional property `authorIds`
+    // If this property is deleted, please add `BookInputMapper.toAuthor(Long)`
+    @IdView("authors") // (6)
+    val authorIds: List<Long>
 }
+
+/*----------------Documentation Links----------------
+(1) (2) https://babyfish-ct.github.io/jimmer-doc/docs/mapping/advanced/key
+(3) https://babyfish-ct.github.io/jimmer-doc/docs/mapping/base/association/many-to-one
+(4) https://babyfish-ct.github.io/jimmer-doc/docs/mapping/base/association/many-to-many
+(5) (6) https://babyfish-ct.github.io/jimmer-doc/docs/mapping/advanced/view/id-view
+---------------------------------------------------*/

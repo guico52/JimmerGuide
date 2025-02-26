@@ -37,9 +37,14 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     val jimmerVersion = "0.9.58"
-    ksp("org.babyfish.jimmer:jimmer-ksp:${jimmerVersion}")
     implementation("org.babyfish.jimmer:jimmer-spring-boot-starter:${jimmerVersion}")
-    implementation("org.babyfish.jimmer:jimmer-sql-kotlin:${jimmerVersion}")
+    implementation("org.babyfish.jimmer:jimmer-core:${jimmerVersion}")
+    implementation("org.babyfish.jimmer:jimmer-core-kotlin:${jimmerVersion}")
+    compileOnly("org.babyfish.jimmer:jimmer-sql:${jimmerVersion}")
+//    implementation("org.babyfish.jimmer:jimmer-sql-kotlin:${jimmerVersion}")
+    ksp("org.babyfish.jimmer:jimmer-ksp:${jimmerVersion}")
+
+
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
